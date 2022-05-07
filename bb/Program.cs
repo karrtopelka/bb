@@ -5,7 +5,9 @@ using Microsoft.Extensions.Options;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddScoped<DocumentService>();
+builder.Services.AddSingleton<DocumentService>();
+builder.Services.AddSingleton<ProjectService>();
+builder.Services.AddSingleton<UserService>();
 builder.Services.Configure<MyDatabaseSettings>(builder.Configuration.GetSection("MyDatabaseSettings"));
 builder.Services.AddSingleton(sp =>
     sp.GetRequiredService<IOptions<MyDatabaseSettings>>().Value);
@@ -13,7 +15,6 @@ builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
     .AddMongoDbStores<ApplicationUser, ApplicationRole, Guid>(
         builder.Configuration.GetSection("MyDatabaseSettings")["ConnectionString"], "acpe");
 builder.Services.AddControllersWithViews();
-
 
 var app = builder.Build();
 

@@ -9,13 +9,11 @@ namespace bb.Controllers;
 [Authorize]
 public class HomeController : Controller
 {
-    private readonly DocumentService _documentService;
     private readonly ILogger<HomeController> _logger;
 
-    public HomeController(ILogger<HomeController> logger, DocumentService documentService)
+    public HomeController(ILogger<HomeController> logger)
     {
         _logger = logger;
-        _documentService = documentService;
     }
 
     public IActionResult Index()

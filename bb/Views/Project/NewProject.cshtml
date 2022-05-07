@@ -1,0 +1,16 @@
+@model Project
+
+<h1>Create project</h1>
+<div asp-validation-summary="All" class="text-danger"></div>
+
+<form method="post">
+    <div class="form-group">
+        <label>Project Name</label>
+        <input name="projectname" class="form-control" required />
+    </div>
+    <div class="form-group">
+        <label>Project description (optional)</label>
+        <input name="projectdescription" class="form-control"  />
+    </div>
+    <button class="btn btn-primary mt-2" type="submit">Create</button>
+</form>
