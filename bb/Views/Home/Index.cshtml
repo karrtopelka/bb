@@ -1,31 +1,16 @@
-﻿@model User
-@using(Html.BeginForm())
-{
-    @Html.TextBoxFor(s => s.Username)
-    @Html.TextBoxFor(s => s.Email)
-    @Html.TextBoxFor(s => s.Password)
-  <input type="submit" value="Generate report" />
-}
+﻿
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <form method="post" asp-action="Index">
+        <p>Username</p>
+        <input type="text" name="username">
 
+        <p>Email</p>
+        <input type="text" name="email">
 
-@{
-    ViewData["Title"] = "Home Page";
-}
+        <p>Password</p>
+        <input type="password" name="password">
 
-@* <div class="text-center"> *@
-@*     <h1 class="display-4">Welcome</h1> *@
-@*     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p> *@
-@*      *@
-@*     <form asp-action="CreateDoc"> *@
-@*         <p>Username</p> *@
-@*         <input type="text" name="username"> *@
-@*          *@
-@*         <p>Email</p> *@
-@*         <input type="text" name="email"> *@
-@* *@
-@*         <p>Password</p> *@
-@*         <input type="password" name="password"> *@
-@*          *@
-@*         <input type="submit"> *@
-@*     </form> *@
-@* </div> *@
+        <input type="submit">
+    </form>
+</div>

@@ -10,9 +10,10 @@ public class HomeController : Controller
     private readonly DocumentService _documentService;
     private readonly ILogger<HomeController> _logger;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(ILogger<HomeController> logger, DocumentService documentService)
     {
         _logger = logger;
+        _documentService = documentService;
     }
 
     public IActionResult Index()
@@ -22,10 +23,12 @@ public class HomeController : Controller
     
     [HttpPost]
     public async Task<IActionResult> Index(
-        User user
+        string username,
+        string email,
+        string password
     )
     {
-        await _documentService.CreateUser(user);
+        await _documentService.CreateUser(new User{Username= username, Email=email, Password=password});
         var count = await _documentService.GetCollectionCount("users");
         return RedirectToAction("Index", GetRouteValues("acpe", "users", count - 1));
     }
