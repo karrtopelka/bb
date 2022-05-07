@@ -7,7 +7,13 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="AspNetCore.Identity.MongoDbCore" Version="3.1.2" />
       <PackageReference Include="MongoDB.Driver" Version="2.15.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Views\ExploreDb\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\ExploreDb\_Document.cshtml" />
     </ItemGroup>
 
 </Project>

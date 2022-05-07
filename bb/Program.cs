@@ -5,13 +5,18 @@ using Microsoft.Extensions.Options;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<DocumentService>();
 builder.Services.Configure<MyDatabaseSettings>(builder.Configuration.GetSection("MyDatabaseSettings"));
 builder.Services.AddSingleton(sp =>
     sp.GetRequiredService<IOptions<MyDatabaseSettings>>().Value);
+builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
+    .AddMongoDbStores<ApplicationUser, ApplicationRole, Guid>(
+        builder.Configuration.GetSection("MyDatabaseSettings")["ConnectionString"], "acpe");
+builder.Services.AddControllersWithViews();
+
 
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -26,6 +31,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

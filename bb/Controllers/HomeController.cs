@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using bb.Models;
 using bb.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace bb.Controllers;
 
+[Authorize]
 public class HomeController : Controller
 {
     private readonly DocumentService _documentService;
@@ -18,29 +20,7 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
-        return View(new User());
-    }
-    
-    [HttpPost]
-    public async Task<IActionResult> Index(
-        string username,
-        string email,
-        string password
-    )
-    {
-        await _documentService.CreateUser(new User{Username= username, Email=email, Password=password});
-        var count = await _documentService.GetCollectionCount("users");
-        return RedirectToAction("Index", GetRouteValues("acpe", "users", count - 1));
-    }
-
-    public IActionResult Privacy()
-    {
         return View();
-    }
-
-    private static object GetRouteValues(string database, string collection, long index)
-    {
-        return new { selectedDatabase = database, selectedCollection = collection, index = index };
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
