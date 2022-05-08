@@ -15,6 +15,8 @@ builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
     .AddMongoDbStores<ApplicationUser, ApplicationRole, Guid>(
         builder.Configuration.GetSection("MyDatabaseSettings")["ConnectionString"], "acpe");
 builder.Services.AddControllersWithViews();
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
 
 var app = builder.Build();
 

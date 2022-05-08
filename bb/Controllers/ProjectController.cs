@@ -27,6 +27,10 @@ public class ProjectController : Controller
     [HttpGet]
     public async Task<IActionResult> Project([FromQuery(Name = "projectId")] string projectId)
     {
+        if (projectId is "" or null)
+        {
+            return Redirect("/");
+        }
         var project = await _projectService.GetProject(projectId);
         return View(project);
     }
