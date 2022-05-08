@@ -1,5 +1,73 @@
-﻿
+﻿@model List<Project>
+
+
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <button><a class="text-black text-decoration-none" asp-area="" asp-controller="Project" asp-action="NewProject">Create project</a></button>
+    <h1 class="display-4">Your projects</h1>
+    <div class="container mt-5 mx-auto">
+        <div class="row gap-2 flex-shrink-0 justify-content-center">
+            <a
+                asp-area=""
+                asp-controller="Project"
+                asp-action="NewProject"
+                class="btn btn-primary col-3 d-flex align-items-center justify-content-center text-decoration-none"
+                style="color: white;">
+                <h3>+ New project</h3>
+            </a>
+            @{
+                foreach (var project in ViewData.Model)
+                {
+                    var style = project.ProjectStatus ? "padding: 0 !important; border-color: #28a745" : "padding: 0 !important; border-color: #ccc";
+                    var isUserAuthor = project.Author.ToString() == ViewData["userId"].ToString();
+                    <div
+                        class="col-3 card"
+                        style="@style">
+                        <h5 class="card-header">
+                            @project.ProjectName
+                        </h5>
+                        <div class="card-body text-start">
+                            <h6 class="card-subtitle mb-2 text-muted">Description: @project.ProjectDescription</h6>
+                            <h6>
+                                <b>
+                                    Status:
+                                    @{
+                                        if (project.ProjectStatus)
+                                        {
+                                            <span class="text-success">Active</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-warning">Closed</span>
+                                        }
+                                    }
+                                </b>
+                            </h6>
+                            <p class="card-text">Date created: @project.DateCreated.ToString("yyyy-MM-dd hh:mm")</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <a asp-area=""
+                                   asp-controller="Home"
+                                   asp-action="GoToProject"
+                                   asp-route-id="@project.Id" class="btn btn-primary">
+                                    View project
+                                </a>
+                                <p class="mb-0">
+                                    (You are
+                                    @{
+                                        if (isUserAuthor)
+                                        {
+                                            <span>Author</span>
+                                        }
+                                        else
+                                        {
+                                            <span>Member</span>
+                                        }
+                                    }
+                                    )
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
 </div>

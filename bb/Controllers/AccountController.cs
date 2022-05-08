@@ -58,7 +58,7 @@ public class AccountController : Controller
     [AllowAnonymous]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Login([Required] [EmailAddress] string email, [Required] string password,
-        string returnurl)
+        string? returnurl)
     {
         if (ModelState.IsValid)
         {
