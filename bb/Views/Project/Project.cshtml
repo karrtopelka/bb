@@ -1,0 +1,34 @@
+@model Project
+
+<div>
+    <h1>Project Id => @ViewData.Model?.Id</h1>
+    <h1>Project Name => @ViewData.Model?.ProjectName</h1>
+    <h1>Project Description => @ViewData.Model?.ProjectDescription</h1>
+    <h1>
+        Project Status =>
+        @if (ViewData.Model?.ProjectStatus ?? false)
+        {
+            <span>Working</span>
+        }
+        else
+        {
+            <span>Ended</span>
+        }
+    </h1>
+    <h1>Project Date created => @ViewData.Model?.DateCreated.ToLongDateString()</h1>
+    <h1>Project Partisipants:</h1>
+    @{
+        if (ViewData.Model?.Participants.Count > 0)
+        {
+            foreach (var participant in ViewData.Model?.Participants)
+            {
+                <p>@participant</p>
+            }
+        }
+        else
+        {
+            <p>Author is only one for now</p>
+        }
+    }
+
+</div>

@@ -24,6 +24,13 @@ public class ProjectController : Controller
         return Redirect("Project/NewProject");
     }
 
+    [HttpGet]
+    public async Task<IActionResult> Project([FromQuery(Name = "projectId")] string projectId)
+    {
+        var project = await _projectService.GetProject(projectId);
+        return View(project);
+    }
+
     public IActionResult NewProject()
     {
         return View();
@@ -52,6 +59,6 @@ public class ProjectController : Controller
             Logs = new List<Guid>()
         };
         var result = await _projectService.CreateProject(newProject);
-        return Redirect($"/?projectId={result.Id}");
+        return Redirect($"Project/Project?projectId={result.Id}");
     }
 }
