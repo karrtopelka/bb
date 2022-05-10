@@ -30,5 +30,5 @@ public class ProjectExtend
 
     [BsonElement("Participants")] public List<ApplicationUser>? Participants { get; set; }
 
-    [BsonElement("Logs")] public List<Guid>? Logs { get; set; }
+    [BsonElement("Logs")] public List<LogExtend>? Logs { get; set; }
 }

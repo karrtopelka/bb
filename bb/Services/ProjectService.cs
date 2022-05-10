@@ -6,21 +6,21 @@ namespace bb.Services;
 
 public class ProjectService
 {
-    private readonly MongoClient _client;
-    private readonly IMongoDatabase _db;
     private readonly IMongoCollection<Project> _projectCollection;
     private readonly UserService _userService;
+    private readonly LogService _logService;
 
-    public ProjectService(MyDatabaseSettings settings, UserService userService)
+    public ProjectService(MyDatabaseSettings settings, UserService userService, LogService logService)
     {
-        _client = new MongoClient(settings.ConnectionString);
-        _db = _client.GetDatabase("acpe");
-        _projectCollection = _db.GetCollection<Project>("projects");
+        var client = new MongoClient(settings.ConnectionString);
+        var db = client.GetDatabase("acpe");
+        _projectCollection = db.GetCollection<Project>("projects");
         _userService = userService;
+        _logService = logService;
     }
 
-    public async Task<List<Project>> GetAllProjects() =>
-        await _projectCollection.Find(_ => true).ToListAsync();
+    public async Task<Project> GetRawProject(string projectId) =>
+        await _projectCollection.Find(x => x.Id == projectId).FirstOrDefaultAsync();
 
     public async Task<List<Project>> GetAllUserProjects(Guid userId) =>
         await _projectCollection.Find(x => x.Author == userId || x.Participants.Contains(userId)).ToListAsync();
@@ -36,6 +36,8 @@ public class ProjectService
         var projectMembers = await _userService.GetAllParticipants(project.Participants);
         var projectAuthor = await _userService.GetUser(project.Author);
 
+        var projectLogs = await _logService.GetProjectLogs(project.Logs);
+
         var projectExtended = new ProjectExtend
         {
             Id = project.Id,
@@ -46,7 +48,7 @@ public class ProjectService
             DateCreated = project.DateCreated,
             DateEnded = project.DateEnded,
             Participants = projectMembers,
-            Logs = project.Logs
+            Logs = projectLogs
         };
 
         return projectExtended;
@@ -82,6 +84,18 @@ public class ProjectService
 
         var updatedProject = await _projectCollection.FindOneAndUpdateAsync(filter, update, options);
         return updatedProject;
+    }
+
+    public async Task<List<ApplicationUser>?> GetProjectParticipants(string id)
+    {
+        var project = await _projectCollection.Find(x => x.Id == id)
+            .FirstOrDefaultAsync();
+        
+        project.Participants.Add(project.Author);
+        
+        var participants = await _userService.GetUsersById(project.Participants);
+
+        return participants;
     }
     
     public async Task UpdateProject(string id, Project updatedProject) =>

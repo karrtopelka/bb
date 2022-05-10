@@ -17,6 +17,7 @@ builder.Logging.AddConsole();
 builder.Services.AddScoped<DocumentService>();
 builder.Services.AddScoped<ProjectService>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<LogService>();
 
 var app = builder.Build();
 

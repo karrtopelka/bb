@@ -30,5 +30,5 @@ public class Project
 
     [BsonElement("Participants")] public List<Guid>? Participants { get; init; }
 
-    [BsonElement("Logs")] public List<Guid>? Logs { get; init; }
+    [BsonElement("Logs")] public List<string>? Logs { get; init; }
 }

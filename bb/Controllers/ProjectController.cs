@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using bb.Services;
 using Microsoft.AspNetCore.Identity;
-using MongoDB.Bson;
 
 namespace bb.Controllers;
 
@@ -61,10 +60,10 @@ public class ProjectController : Controller
             Author = author.Id,
             DateCreated = currentTime,
             Participants = new List<Guid>(),
-            Logs = new List<Guid>()
+            Logs = new List<string>()
         };
         var result = await _projectService.CreateProject(newProject);
-        return Redirect($"Project/Project?projectId={result.Id}");
+        return Redirect($"/Project/Project?projectId={result.Id}");
     }
 
     public async Task<IActionResult> CloseProject(string id)
@@ -77,5 +76,10 @@ public class ProjectController : Controller
     {
         var newProject = await _projectService.ReopenProject(id);
         return Redirect($"/Project/Project?projectId={newProject.Id}");
+    }
+    
+    public IActionResult AddLog(string id)
+    {
+        return Redirect($"/Log/AddLog?projectId={id}");
     }
 }

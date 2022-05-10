@@ -4,7 +4,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace bb.Models;
 
-public class Log
+public class LogExtend
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
@@ -12,7 +12,7 @@ public class Log
 
     [Required] [BsonElement("LogDate")] public DateTime LogDate { get; set; }
 
-    [Required] [BsonElement("Who")] public Guid Who { get; set; }
+    [Required] [BsonElement("Who")] public ApplicationUser Who { get; set; }
 
     [Required] [BsonElement("Amount")] public double Amount { get; set; }
 

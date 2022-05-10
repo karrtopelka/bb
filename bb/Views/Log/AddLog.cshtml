@@ -1,0 +1,45 @@
+@model Log
+
+@{
+    var participants = ViewData["participants"] as List<ApplicationUser>;
+    var projectId = ViewData["projectId"] as string;
+}
+
+<div>
+    <h1>Add log</h1>
+    <div class="w-100 border border-1 rounded rounded-1 p-4 mt-4">
+        <form method="post">
+            <div>
+                <h3>Invest person</h3>
+                @if (participants.Count > 0)
+                {
+                    <select
+                        class="form-select form-select-lg"
+                        asp-for="Who"
+                        asp-items="@(new SelectList(participants, nameof(ApplicationUser.Id), nameof(ApplicationUser.UserName)))">
+                        <option>Please select one</option>
+                    </select>
+                }
+                else
+                {
+                    <p>As you are the only one in the project, You are assigned as invest person</p>
+                }
+            </div>
+            <div class="mt-3">
+                <h3>Amount</h3>
+                <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    <input asp-for="Amount" type="number" min="0" class="form-control">
+                    <span class="input-group-text">.00</span>
+                </div>
+            </div>
+            <div class="mt-3">
+                <h3>Purpose</h3>
+                <input asp-for="Purpose" type="text" class="form-control" placeholder="Pay at restaurant">
+            </div>
+            <div class="text-center text-lg-start mt-4 pt-2 d-grid gap-2">
+                <button type="submit" class="btn btn-primary btn-lg btn-block">Add log</button>
+            </div>
+        </form>
+    </div>
+</div>
