@@ -5,9 +5,6 @@ using Microsoft.Extensions.Options;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddSingleton<DocumentService>();
-builder.Services.AddSingleton<ProjectService>();
-builder.Services.AddSingleton<UserService>();
 builder.Services.Configure<MyDatabaseSettings>(builder.Configuration.GetSection("MyDatabaseSettings"));
 builder.Services.AddSingleton(sp =>
     sp.GetRequiredService<IOptions<MyDatabaseSettings>>().Value);
@@ -17,6 +14,9 @@ builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
 builder.Services.AddControllersWithViews();
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
+builder.Services.AddScoped<DocumentService>();
+builder.Services.AddScoped<ProjectService>();
+builder.Services.AddScoped<UserService>();
 
 var app = builder.Build();
 

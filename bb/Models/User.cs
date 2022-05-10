@@ -7,7 +7,7 @@ namespace bb.Models;
 public class User
 {
     public Guid _id { get; set; }
-    [Required] [BsonElement("username")] public string Username { get; set; }
+    [Required] [BsonElement("username")] public string UserName { get; set; }
 
     [Required]
     [BsonElement("email")]

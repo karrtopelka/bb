@@ -28,7 +28,7 @@ public class AccountController : Controller
         {
             var appUser = new ApplicationUser
             {
-                UserName = user.Username,
+                UserName = user.UserName,
                 Email = user.Email
             };
 

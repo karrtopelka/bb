@@ -31,6 +31,7 @@ public class ProjectController : Controller
         {
             return Redirect("/");
         }
+
         var project = await _projectService.GetProject(projectId);
         return View(project);
     }
@@ -64,5 +65,17 @@ public class ProjectController : Controller
         };
         var result = await _projectService.CreateProject(newProject);
         return Redirect($"Project/Project?projectId={result.Id}");
+    }
+
+    public async Task<IActionResult> CloseProject(string id)
+    {
+        var newProject = await _projectService.CloseProject(id);
+        return Redirect($"/Project/Project?projectId={newProject.Id}");
+    }
+    
+    public async Task<IActionResult> ReopenProject(string id)
+    {
+        var newProject = await _projectService.ReopenProject(id);
+        return Redirect($"/Project/Project?projectId={newProject.Id}");
     }
 }

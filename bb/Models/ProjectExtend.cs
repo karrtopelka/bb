@@ -4,7 +4,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace bb.Models;
 
-public class Project
+public class ProjectExtend
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
@@ -12,7 +12,7 @@ public class Project
 
     [Required]
     [BsonElement("ProjectName")]
-    public string? ProjectName { get; init; }
+    public string ProjectName { get; set; }
 
     [Required]
     [BsonElement("ProjectStatus")]
@@ -20,7 +20,7 @@ public class Project
 
     [BsonElement("ProjectDescription")] public string? ProjectDescription { get; set; }
 
-    [Required] [BsonElement("Author")] public Guid Author { get; set; }
+    [Required] [BsonElement("Author")] public ApplicationUser? Author { get; set; }
 
     [Required]
     [BsonElement("DateCreated")]
@@ -28,7 +28,7 @@ public class Project
 
     [BsonElement("DateEnded")] public DateTime? DateEnded { get; set; }
 
-    [BsonElement("Participants")] public List<Guid>? Participants { get; init; }
+    [BsonElement("Participants")] public List<ApplicationUser>? Participants { get; set; }
 
-    [BsonElement("Logs")] public List<Guid>? Logs { get; init; }
+    [BsonElement("Logs")] public List<Guid>? Logs { get; set; }
 }

@@ -16,7 +16,9 @@
             @{
                 foreach (var project in ViewData.Model)
                 {
-                    var style = project.ProjectStatus ? "padding: 0 !important; border-color: #28a745" : "padding: 0 !important; border-color: #ccc";
+                    var style = project.ProjectStatus ?
+                        "padding: 0 !important; border-color: #28a745" :
+                        "padding: 0 !important; border-color: #ccc";
                     var isUserAuthor = project.Author.ToString() == ViewData["userId"].ToString();
                     <div
                         class="col-3 card"
@@ -46,7 +48,8 @@
                                 <a asp-area=""
                                    asp-controller="Home"
                                    asp-action="GoToProject"
-                                   asp-route-id="@project.Id" class="btn btn-primary">
+                                   asp-route-id="@project.Id"
+                                   class="btn btn-primary">
                                     View project
                                 </a>
                                 <p class="mb-0">
