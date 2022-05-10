@@ -11,11 +11,13 @@ public class ProjectController : Controller
 {
     private readonly ProjectService _projectService;
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly UserService _userService;
 
-    public ProjectController(ProjectService projectService, UserManager<ApplicationUser> userManager)
+    public ProjectController(ProjectService projectService, UserManager<ApplicationUser> userManager, UserService userService)
     {
         _projectService = projectService;
         _userManager = userManager;
+        _userService = userService;
     }
 
     public IActionResult Index()
@@ -81,5 +83,27 @@ public class ProjectController : Controller
     public IActionResult AddLog(string id)
     {
         return Redirect($"/Log/AddLog?projectId={id}");
+    }
+    
+	[HttpPost]
+    public async Task<IActionResult> NewParticipant(string projectId, string username)
+    {
+        var user = await _userService.GetUserByUsername(username);
+        if (user == null)
+        {
+            return Redirect($"Project/Project?projectId={projectId}");
+        }
+		var project = await _projectService.GetRawProject(projectId);
+        project.Participants.Add(user.Id);
+        await _projectService.UpdateProject(projectId, project);
+        return Redirect($"Project/Project?projectId={projectId}");
+    }
+    [HttpGet]
+    public async Task<IActionResult> RemoveParticipant(string projectId, Guid userId)
+    {
+        var project = await _projectService.GetRawProject(projectId);
+        project.Participants = project.Participants.Where(id => id != userId).ToList();
+        await _projectService.UpdateProject(projectId, project);
+        return Redirect($"Project/Project?projectId={projectId}");
     }
 }
