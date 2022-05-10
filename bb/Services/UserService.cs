@@ -33,4 +33,7 @@ public class UserService
 
     public async Task<List<ApplicationUser>> GetAllParticipants(List<Guid> participants) =>
         await _userCollection.Find(x => participants.Contains(x.Id)).ToListAsync();
+
+	public async Task<ApplicationUser?> GetUserByUsername(string username) =>
+        await _userCollection.Find(x => x.UserName == username).FirstOrDefaultAsync();
 }

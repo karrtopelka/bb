@@ -28,7 +28,7 @@ public class Project
 
     [BsonElement("DateEnded")] public DateTime? DateEnded { get; set; }
 
-    [BsonElement("Participants")] public List<Guid>? Participants { get; init; }
+    [BsonElement("Participants")] public List<Guid>? Participants { get; set; }
 
     [BsonElement("Logs")] public List<string>? Logs { get; init; }
 }
