@@ -22,7 +22,6 @@ public class LogController : Controller
     {
         var participants = await _projectService.GetProjectParticipants(projectId);
         ViewData["participants"] = participants;
-        ViewData["projectId"] = projectId;
         return View();
     }
 
@@ -31,7 +30,25 @@ public class LogController : Controller
     {
         log.LogDate = DateTime.Now;
         await _logService.AddLog(log, projectId);
-        
+
+        return Redirect($"/Project/Project?projectId={projectId}");
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> EditLog([FromQuery(Name = "projectId")] string projectId,
+        [FromQuery(Name = "logId")] string logId)
+    {
+        var logData = await _logService.GetLog(logId);
+        var participants = await _projectService.GetProjectParticipants(projectId);
+        ViewData["participants"] = participants;
+        return View(logData);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> EditLog(Log log, [FromQuery(Name = "projectId")] string projectId)
+    {
+        await _logService.EditLog(log);
+
         return Redirect($"/Project/Project?projectId={projectId}");
     }
 }

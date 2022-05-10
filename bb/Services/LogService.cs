@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using bb.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -17,12 +18,24 @@ public class LogService
         _projectCollection = db.GetCollection<Project>("projects");
     }
 
+    public async Task<Log> GetLog(string logId) => await _logCollection.Find(x => x.Id == logId).FirstOrDefaultAsync();
+
     public async Task AddLog(Log newLog, string projectId)
     {
         await _logCollection.InsertOneAsync(newLog);
         var project = await _projectCollection.Find(x => x.Id == projectId).FirstOrDefaultAsync();
         project.Logs.Add(newLog.Id);
         await _projectCollection.ReplaceOneAsync(x => x.Id == projectId, project);
+    }
+
+    public async Task EditLog(Log newLog)
+    {
+        var filter = Builders<Log>.Filter.Where(_ => _.Id == newLog.Id);
+        var update = Builders<Log>.Update.Set(_ => _.Who, newLog.Who)
+            .Set(_ => _.Amount, newLog.Amount).Set(_ => _.Purpose, newLog.Purpose);
+        var options = new FindOneAndUpdateOptions<Log>();
+
+        await _logCollection.FindOneAndUpdateAsync(filter, update, options);
     }
 
     public async Task<List<LogExtend>?> GetProjectLogs(List<string> logs)
@@ -32,7 +45,7 @@ public class LogService
         {
             logsAsObjectId.Add(new ObjectId(logId));
         }
-        
+
         var match = new BsonDocument("$match",
             new BsonDocument("$expr",
                 new BsonDocument("$in",

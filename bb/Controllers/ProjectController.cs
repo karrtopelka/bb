@@ -82,4 +82,15 @@ public class ProjectController : Controller
     {
         return Redirect($"/Log/AddLog?projectId={id}");
     }
+    
+    public IActionResult EditLog(string projectId, string logId)
+    {
+        return Redirect($"/Log/EditLog?projectId={projectId}&logId={logId}");
+    }
+    
+    public async Task<IActionResult> RemoveLog(string projectId, string logId)
+    {
+        await _projectService.RemoveLog(projectId, logId);
+        return Redirect($"/Project/Project?projectId={projectId}");
+    }
 }
