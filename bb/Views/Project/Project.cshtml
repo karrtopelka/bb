@@ -86,38 +86,44 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>@ViewData.Model.Author.Email</td>
-                        <td>@ViewData.Model.Author.UserName</td>
-                        <td>0</td>
-                        <td>
-                            -
-                        </td>
-                    </tr>
+                    @{
+                        var amountSumAuthor = ViewData.Model.Logs.Where(log => log.Who.Id == ViewData.Model.Author.Id).Sum(log => log.Amount);
+                        <tr>
+                            <th scope="row">1</th>
+                            <td>@ViewData.Model.Author.Email</td>
+                            <td>@ViewData.Model.Author.UserName</td>
+                            <td>$@amountSumAuthor</td>
+                            <td>
+                                -
+                            </td>
+                        </tr>
+                    }
                     @{
                         if (ViewData.Model.Participants.Count > 0)
                         {
                             foreach (var participant in ViewData.Model.Participants.Select((participant, i) => new {i = i + 2, participant}))
                             {
-                                <tr>
-                                    <th scope="row">@participant.i</th>
-                                    <td>@participant.participant.Email</td>
-                                    <td>@participant.participant.UserName</td>
-                                    <td>0</td>
-                                    <td>
-                                        @{
-                                            if (ViewData.Model.ProjectStatus && isCurrentUserAuthor)
-                                            {
-                                                <button class="btn btn-danger">Remove</button>
+                                {
+                                    var amountSum = ViewData.Model.Logs.Where(log => log.Who.Id == participant.participant.Id).Sum(log => log.Amount);
+                                    <tr>
+                                        <th scope="row">@participant.i</th>
+                                        <td>@participant.participant.Email</td>
+                                        <td>@participant.participant.UserName</td>
+                                        <td>$@amountSum</td>
+                                        <td>
+                                            @{
+                                                if (ViewData.Model.ProjectStatus && isCurrentUserAuthor)
+                                                {
+                                                    <button class="btn btn-danger">Remove</button>
+                                                }
+                                                else
+                                                {
+                                                    <span>-</span>
+                                                }
                                             }
-                                            else
-                                            {
-                                                <span>-</span>
-                                            }
-                                        }
-                                    </td>
-                                </tr>
+                                        </td>
+                                    </tr>
+                                }
                             }
                         }
 

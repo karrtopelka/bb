@@ -23,7 +23,7 @@ public class LogController : Controller
         var participants = await _projectService.GetProjectParticipants(projectId);
         ViewData["participants"] = participants;
         ViewData["projectId"] = projectId;
-        return View(new Log());
+        return View();
     }
 
     [HttpPost]

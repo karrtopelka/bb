@@ -63,7 +63,7 @@ public class ProjectService
     public async Task<Project> CloseProject(string id)
     {
         var filter = Builders<Project>.Filter.Where(_ => _.Id == id);
-        var update =  Builders<Project>.Update.Set(_ => _.ProjectStatus, false);
+        var update = Builders<Project>.Update.Set(_ => _.ProjectStatus, false).Set(_ => _.DateEnded, DateTime.Now);
         var options = new FindOneAndUpdateOptions<Project>
         {
             ReturnDocument = ReturnDocument.After
@@ -72,11 +72,11 @@ public class ProjectService
         var updatedProject = await _projectCollection.FindOneAndUpdateAsync(filter, update, options);
         return updatedProject;
     }
-    
+
     public async Task<Project> ReopenProject(string id)
     {
         var filter = Builders<Project>.Filter.Where(_ => _.Id == id);
-        var update =  Builders<Project>.Update.Set(_ => _.ProjectStatus, true);
+        var update = Builders<Project>.Update.Set(_ => _.ProjectStatus, true).Set(_ => _.DateEnded, null);
         var options = new FindOneAndUpdateOptions<Project>
         {
             ReturnDocument = ReturnDocument.After
@@ -90,14 +90,14 @@ public class ProjectService
     {
         var project = await _projectCollection.Find(x => x.Id == id)
             .FirstOrDefaultAsync();
-        
+
         project.Participants.Add(project.Author);
-        
+
         var participants = await _userService.GetUsersById(project.Participants);
 
         return participants;
     }
-    
+
     public async Task UpdateProject(string id, Project updatedProject) =>
         await _projectCollection.ReplaceOneAsync(x => x.Id == id, updatedProject);
 

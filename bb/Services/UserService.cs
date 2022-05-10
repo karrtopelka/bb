@@ -1,4 +1,6 @@
+using AspNetCore.Identity.MongoDbCore.Extensions;
 using bb.Models;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace bb.Services;

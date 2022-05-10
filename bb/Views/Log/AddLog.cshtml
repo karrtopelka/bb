@@ -17,7 +17,6 @@
                         class="form-select form-select-lg"
                         asp-for="Who"
                         asp-items="@(new SelectList(participants, nameof(ApplicationUser.Id), nameof(ApplicationUser.UserName)))">
-                        <option>Please select one</option>
                     </select>
                 }
                 else
