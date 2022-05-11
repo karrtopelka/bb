@@ -76,4 +76,7 @@ public class LogService
 
         return result;
     }
+    
+    public async Task RemoveLog(string id) =>
+        await _logCollection.DeleteOneAsync(x => x.Id == id);
 }

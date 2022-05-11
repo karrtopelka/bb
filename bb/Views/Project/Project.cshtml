@@ -4,10 +4,16 @@
     var isCurrentUserAuthor = ViewData.Model.Author.UserName == User.Identity?.Name;
 }
 
+<script type="text/javascript">
+    setSelectedRemoveUser = (id) => document.getElementById('removeParticipantId').value = id
+</script>
+
 <div>
+@Html.Raw(TempData["msg"])
 <div class="d-flex w-100 justify-content-between align-items-center mt-4">
     <div>
         <h1>@ViewData.Model?.ProjectName</h1>
+        <p class="text-muted">@ViewData.Model.ProjectDescription</p>
         <p class="text-muted">Created by @ViewData.Model.Author.UserName on @ViewData.Model?.DateCreated.ToLongDateString()</p>
     </div>
     @{
@@ -89,7 +95,7 @@
                         <th scope="row">1</th>
                         <td>@ViewData.Model.Author.Email</td>
                         <td>@ViewData.Model.Author.UserName</td>
-                        <td>$@amountSumAuthor</td>
+                        <td>$@amountSumAuthor.ToString("N")</td>
                         <td>
                             -
                         </td>
@@ -106,20 +112,18 @@
                                     <th scope="row">@participant.i</th>
                                     <td>@participant.participant.Email</td>
                                     <td>@participant.participant.UserName</td>
-                                    <td>$@amountSum</td>
+                                    <td>$@amountSum.ToString("N")</td>
                                     <td>
                                         @{
                                             if (ViewData.Model.ProjectStatus && isCurrentUserAuthor)
                                             {
-                                                <a
-                                                    asp-area=""
+                                                <button
                                                     class="btn btn-danger"
-                                                    asp-controller="Project"
-                                                    asp-action="RemoveParticipant"
-                                                    asp-route-projectId="@ViewData.Model?.Id"
-                                                    asp-route-userId="@participant.participant.Id">
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#exampleModal2"
+                                                    onclick="setSelectedRemoveUser('@participant.participant.Id')">
                                                     Remove
-                                                </a>
+                                                </button>
                                             }
                                             else
                                             {
@@ -175,51 +179,47 @@
                     </thead>
                     <tbody>
                     @{
-                        if (ViewData.Model.Participants.Count > 0)
+                        foreach (var log in ViewData.Model.Logs.Select((log, i) => new {i = i + 1, log}))
                         {
-                            foreach (var log in ViewData.Model.Logs.Select((log, i) => new {i = i + 1, log}))
-                            {
-                                <tr>
-                                    <th scope="row">@log.i</th>
-                                    <td>@log.log.Who.UserName</td>
-                                    <td>$@log.log.Amount</td>
-                                    <td>@log.log.Purpose</td>
-                                    <td>@log.log.LogDate.ToString("dd.MM.yyyy HH:mm")</td>
-                                    <td>
-                                        @{
-                                            if (ViewData.Model.ProjectStatus && isCurrentUserAuthor)
-                                            {
-                                                <div class="d-flex align-items-center gap-2">
-                                                    <a
-                                                        asp-area=""
-                                                        asp-controller="Project"
-                                                        asp-action="EditLog"
-                                                        asp-route-projectId="@ViewData.Model.Id"
-                                                        asp-route-logId="@log.log.Id"
-                                                        class="btn btn-primary">
-                                                        Edit
-                                                    </a>
-                                                    <a
-                                                        asp-area=""
-                                                        asp-controller="Project"
-                                                        asp-action="RemoveLog"
-                                                        asp-route-projectId="@ViewData.Model.Id"
-                                                        asp-route-logId="@log.log.Id"
-                                                        class="btn btn-danger">
-                                                        Delete
-                                                    </a>
-                                                </div>
-                                            }
-                                            else
-                                            {
-                                                <span>-</span>
-                                            }
+                            <tr>
+                                <th scope="row">@log.i</th>
+                                <td>@log.log.Who.UserName</td>
+                                <td>$@log.log.Amount.ToString("N")</td>
+                                <td>@log.log.Purpose</td>
+                                <td>@log.log.LogDate.ToString("dd.MM.yyyy HH:mm")</td>
+                                <td>
+                                    @{
+                                        if (ViewData.Model.ProjectStatus && isCurrentUserAuthor)
+                                        {
+                                            <div class="d-flex align-items-center gap-2">
+                                                <a
+                                                    asp-area=""
+                                                    asp-controller="Project"
+                                                    asp-action="EditLog"
+                                                    asp-route-projectId="@ViewData.Model.Id"
+                                                    asp-route-logId="@log.log.Id"
+                                                    class="btn btn-primary">
+                                                    Edit
+                                                </a>
+                                                <a
+                                                    asp-area=""
+                                                    asp-controller="Project"
+                                                    asp-action="RemoveLog"
+                                                    asp-route-projectId="@ViewData.Model.Id"
+                                                    asp-route-logId="@log.log.Id"
+                                                    class="btn btn-danger">
+                                                    Delete
+                                                </a>
+                                            </div>
                                         }
-                                    </td>
-                                </tr>
-                            }
+                                        else
+                                        {
+                                            <span>-</span>
+                                        }
+                                    }
+                                </td>
+                            </tr>
                         }
-
                     }
                     </tbody>
                 </table>
@@ -242,8 +242,49 @@
             <div class="modal-body">
                 <form method="post">
                     <input type="text" class="form-control mb-3" placeholder="Username" name="username" required>
-                    <input type="submit" class="btn btn-primary" asp-controller="Project" asp-action="NewParticipant" asp-route-projectId="@ViewData.Model?.Id" value="Add participant">
+                    <input
+                        type="submit"
+                        class="btn btn-primary"
+                        asp-controller="Project"
+                        asp-action="NewParticipant"
+                        asp-route-projectId="@ViewData.Model?.Id"
+                        asp-route-authorUsername="@ViewData.Model?.Author.UserName"
+                        value="Add participant">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel2">Delete all associated user logs?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post">
+                    <div class="d-flex w-100 align-items-center justify-content-between gap-4">
+                        <input name="userId" id="removeParticipantId" type="text" hidden>
+                        <input
+                            type="submit"
+                            class="btn btn-danger"
+                            style="flex: 1;"
+                            asp-action="RemoveParticipant"
+                            asp-route-projectId="@ViewData.Model?.Id"
+                            asp-route-deleteLogs="@true"
+                            value="Remove">
+                        <input
+                            type="submit"
+                            class="btn btn-secondary"
+                            style="flex: 1;"
+                            asp-action="RemoveParticipant"
+                            asp-route-projectId="@ViewData.Model?.Id"
+
+                            asp-route-deleteLogs="@false"
+                            value="Keep">
+                    </div>
                 </form>
             </div>
         </div>
