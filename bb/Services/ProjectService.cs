@@ -97,6 +97,18 @@ public class ProjectService
 
         return participants;
     }
+    
+    public async Task RemoveLog(string id, string logId)
+    {
+        var project = await _projectCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
+        var filteredLogs = project.Logs.Where(x => x != logId).ToList();
+        
+        var filter = Builders<Project>.Filter.Where(_ => _.Id == id);
+        var update = Builders<Project>.Update.Set(_ => _.Logs, filteredLogs);
+        var options = new FindOneAndUpdateOptions<Project>();
+
+        await _projectCollection.FindOneAndUpdateAsync(filter, update, options);
+    }
 
     public async Task UpdateProject(string id, Project updatedProject) =>
         await _projectCollection.ReplaceOneAsync(x => x.Id == id, updatedProject);

@@ -2,10 +2,11 @@
 
 @{
     var participants = ViewData["participants"] as List<ApplicationUser>;
+    var logWho = participants.First(x => x.Id == ViewData.Model.Who);
 }
 
 <div>
-    <h1>Add log</h1>
+    <h1>Edit log</h1>
     <div class="w-100 border border-1 rounded rounded-1 p-4 mt-4">
         <form method="post">
             <div>
@@ -15,7 +16,8 @@
                     <select
                         class="form-select form-select-lg"
                         asp-for="Who"
-                        asp-items="@(new SelectList(participants, nameof(ApplicationUser.Id), nameof(ApplicationUser.UserName)))">
+                        asp-items="@( new SelectList(participants.Where(x => x.Id != logWho.Id).ToList(), nameof(ApplicationUser.Id), nameof(ApplicationUser.UserName)))">
+                        <option value="@logWho.Id" selected>@logWho.UserName</option>
                     </select>
                 }
                 else
@@ -27,16 +29,17 @@
                 <h3>Amount</h3>
                 <div class="input-group">
                     <span class="input-group-text">$</span>
-                    <input asp-for="Amount" type="number" min="0" class="form-control">
+                    <input asp-for="Amount" type="number" min="0" class="form-control" value="@ViewData.Model.Amount">
                     <span class="input-group-text">.00</span>
                 </div>
             </div>
             <div class="mt-3">
                 <h3>Purpose</h3>
-                <input asp-for="Purpose" type="text" class="form-control" placeholder="Pay at restaurant">
+                <input asp-for="Purpose" type="text" class="form-control" placeholder="Pay at restaurant" value="@ViewData.Model.Purpose">
             </div>
+            <input asp-for="Id" type="text" value="@ViewData.Model.Id" hidden>
             <div class="text-center text-lg-start mt-4 pt-2 d-grid gap-2">
-                <button type="submit" class="btn btn-primary btn-lg btn-block">Add log</button>
+                <button type="submit" class="btn btn-primary btn-lg btn-block">Edit log</button>
             </div>
         </form>
     </div>

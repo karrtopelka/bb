@@ -4,231 +4,248 @@
     var isCurrentUserAuthor = ViewData.Model.Author.UserName == User.Identity?.Name;
 }
 
-
 <div>
-    <div class="d-flex w-100 justify-content-between align-items-center mt-4">
-        <div>
-            <h1>@ViewData.Model?.ProjectName</h1>
-            <p class="text-muted">Created by @ViewData.Model.Author.UserName on @ViewData.Model?.DateCreated.ToLongDateString()</p>
-        </div>
-        @{
-            if (ViewData.Model.ProjectStatus)
+<div class="d-flex w-100 justify-content-between align-items-center mt-4">
+    <div>
+        <h1>@ViewData.Model?.ProjectName</h1>
+        <p class="text-muted">Created by @ViewData.Model.Author.UserName on @ViewData.Model?.DateCreated.ToLongDateString()</p>
+    </div>
+    @{
+        if (ViewData.Model.ProjectStatus)
+        {
+            if (isCurrentUserAuthor)
             {
-                if (isCurrentUserAuthor)
-                {
-                    <form>
-                        <button asp-area=""
-                                asp-controller="Project"
-                                asp-action="CloseProject"
-                                asp-route-id="@ViewData.Model.Id"
-                                class="btn btn-danger">
-                            Close project
-                        </button>
-                    </form>
-                }
-                else
-                {
-                    <p class="text-success">Project is active</p>
-                }
+                <form>
+                    <button asp-area=""
+                            asp-controller="Project"
+                            asp-action="CloseProject"
+                            asp-route-id="@ViewData.Model.Id"
+                            class="btn btn-danger">
+                        Close project
+                    </button>
+                </form>
             }
             else
             {
-                <div class="d-flex align-items-center">
-                    <p class="text-muted mb-0">Project is closed</p>
-                    @{
-                        if (isCurrentUserAuthor)
-                        {
-                            <form>
-                                <button asp-area=""
-                                        asp-controller="Project"
-                                        asp-action="ReopenProject"
-                                        asp-route-id="@ViewData.Model.Id"
-                                        class="btn btn-success"
-                                        style="margin-left: 1.5rem">
-                                    Reopen project
-                                </button>
-                            </form>
-                        }
+                <p class="text-success">Project is active</p>
+            }
+        }
+        else
+        {
+            <div class="d-flex align-items-center">
+                <p class="text-muted mb-0">Project is closed</p>
+                @{
+                    if (isCurrentUserAuthor)
+                    {
+                        <form>
+                            <button asp-area=""
+                                    asp-controller="Project"
+                                    asp-action="ReopenProject"
+                                    asp-route-id="@ViewData.Model.Id"
+                                    class="btn btn-success"
+                                    style="margin-left: 1.5rem">
+                                Reopen project
+                            </button>
+                        </form>
                     }
+                }
+            </div>
+        }
+    }
+</div>
+<div class="w-100 border border-1 rounded rounded-1 d-flex flex-column p-4 mt-4">
+    <div class="w-100 d-flex align-items-center justify-content-between">
+        <h2 class="mb-0">Participants</h2>
+        @{
+            if (ViewData.Model.ProjectStatus)
+            {
+                <div class="align-self-end">
+                    <button
+                        data-bs-toggle="modal"
+                        data-bs-target="#exampleModal"
+                        class="btn btn-primary">
+                        Add member
+                    </button>
                 </div>
             }
         }
     </div>
-    <div class="w-100 border border-1 rounded rounded-1 d-flex flex-column p-4 mt-4">
-        <div class="w-100 d-flex align-items-center justify-content-between">
-            <h2 class="mb-0">Participants</h2>
-            @{
-                if (ViewData.Model.ProjectStatus)
-                {
-                    <div class="align-self-end">
-                        <button
-                        	class="btn btn-primary"
-							data-bs-toggle="modal" 
-							data-bs-target="#exampleModal">
-                            Add member
-                    	</button>
-                    </div>
+    <div class="w-100 mt-3">
+        @{
+            <table class="table table-striped table-hover">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Username</th>
+                    <th scope="col">Invested</th>
+                    <th scope="col">Operation</th>
+                </tr>
+                </thead>
+                <tbody>
+                @{
+                    var amountSumAuthor = ViewData.Model.Logs.Where(log => log.Who.Id == ViewData.Model.Author.Id).Sum(log => log.Amount);
+                    <tr>
+                        <th scope="row">1</th>
+                        <td>@ViewData.Model.Author.Email</td>
+                        <td>@ViewData.Model.Author.UserName</td>
+                        <td>$@amountSumAuthor</td>
+                        <td>
+                            -
+                        </td>
+                    </tr>
                 }
+                @{
+                    if (ViewData.Model.Participants.Count > 0)
+                    {
+                        foreach (var participant in ViewData.Model.Participants.Select((participant, i) => new {i = i + 2, participant}))
+                        {
+                            {
+                                var amountSum = ViewData.Model.Logs.Where(log => log.Who.Id == participant.participant.Id).Sum(log => log.Amount);
+                                <tr>
+                                    <th scope="row">@participant.i</th>
+                                    <td>@participant.participant.Email</td>
+                                    <td>@participant.participant.UserName</td>
+                                    <td>$@amountSum</td>
+                                    <td>
+                                        @{
+                                            if (ViewData.Model.ProjectStatus && isCurrentUserAuthor)
+                                            {
+                                                <a
+                                                    asp-area=""
+                                                    class="btn btn-danger"
+                                                    asp-controller="Project"
+                                                    asp-action="RemoveParticipant"
+                                                    asp-route-projectId="@ViewData.Model?.Id"
+                                                    asp-route-userId="@participant.participant.Id">
+                                                    Remove
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <span>-</span>
+                                            }
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    }
+
+                }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+<div class="w-100 border border-1 rounded rounded-1 d-flex flex-column justify-content-center p-4 mt-4">
+    <div class="w-100 d-flex align-items-center justify-content-between">
+        <h2 class="mb-0">Logs</h2>
+        @{
+            if (ViewData.Model.ProjectStatus)
+            {
+                <div class="align-self-end">
+                    <form>
+                        <button
+                            asp-area=""
+                            asp-action="AddLog"
+                            asp-route-id="@ViewData.Model.Id"
+                            class="btn btn-primary">
+                            Add log
+                        </button>
+                    </form>
+                </div>
             }
-        </div>
-        <div class="w-100 mt-3">
-            @{
+        }
+    </div>
+    <div class="w-100 mt-3">
+        @{
+            if (ViewData.Model.Logs.Count > 0)
+            {
                 <table class="table table-striped table-hover">
                     <thead>
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">Username</th>
-                        <th scope="col">Invested</th>
+                        <th scope="col">Who</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Purpose</th>
+                        <th scope="col">Date</th>
                         <th scope="col">Operation</th>
                     </tr>
                     </thead>
                     <tbody>
                     @{
-                        var amountSumAuthor = ViewData.Model.Logs.Where(log => log.Who.Id == ViewData.Model.Author.Id).Sum(log => log.Amount);
-                        <tr>
-                            <th scope="row">1</th>
-                            <td>@ViewData.Model.Author.Email</td>
-                            <td>@ViewData.Model.Author.UserName</td>
-                            <td>$@amountSumAuthor</td>
-                            <td>
-                                -
-                            </td>
-                        </tr>
-                    }
-                    @{
                         if (ViewData.Model.Participants.Count > 0)
                         {
-                            foreach (var participant in ViewData.Model.Participants.Select((participant, i) => new {i = i + 2, participant}))
+                            foreach (var log in ViewData.Model.Logs.Select((log, i) => new {i = i + 1, log}))
                             {
-                                {
-                                    var amountSum = ViewData.Model.Logs.Where(log => log.Who.Id == participant.participant.Id).Sum(log => log.Amount);
-                                    <tr>
-                                        <th scope="row">@participant.i</th>
-                                        <td>@participant.participant.Email</td>
-                                        <td>@participant.participant.UserName</td>
-                                        <td>$@amountSum</td>
-                                        <td>
-                                            @{
-                                                if (ViewData.Model.ProjectStatus && isCurrentUserAuthor)
-                                                {
-                                                    <a 
-														asp-area=""
- 														class="btn btn-danger" 
-														asp-controller="Project"
- 														asp-action="RemoveParticipant"
-  														asp-route-projectId="@ViewData.Model?.Id"
-														asp-route-userId="@participant.participant.Id">Remove</a>
-                                                }
-                                                else
-                                                {
-                                                    <span>-</span>
-                                                }
+                                <tr>
+                                    <th scope="row">@log.i</th>
+                                    <td>@log.log.Who.UserName</td>
+                                    <td>$@log.log.Amount</td>
+                                    <td>@log.log.Purpose</td>
+                                    <td>@log.log.LogDate.ToString("dd.MM.yyyy HH:mm")</td>
+                                    <td>
+                                        @{
+                                            if (ViewData.Model.ProjectStatus && isCurrentUserAuthor)
+                                            {
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <a
+                                                        asp-area=""
+                                                        asp-controller="Project"
+                                                        asp-action="EditLog"
+                                                        asp-route-projectId="@ViewData.Model.Id"
+                                                        asp-route-logId="@log.log.Id"
+                                                        class="btn btn-primary">
+                                                        Edit
+                                                    </a>
+                                                    <a
+                                                        asp-area=""
+                                                        asp-controller="Project"
+                                                        asp-action="RemoveLog"
+                                                        asp-route-projectId="@ViewData.Model.Id"
+                                                        asp-route-logId="@log.log.Id"
+                                                        class="btn btn-danger">
+                                                        Delete
+                                                    </a>
+                                                </div>
                                             }
-                                        </td>
-                                    </tr>
-                                }
+                                            else
+                                            {
+                                                <span>-</span>
+                                            }
+                                        }
+                                    </td>
+                                </tr>
                             }
                         }
+
                     }
                     </tbody>
                 </table>
             }
-        </div>
-    </div>
-    <div class="w-100 border border-1 rounded rounded-1 d-flex flex-column justify-content-center p-4 mt-4">
-        <div class="w-100 d-flex align-items-center justify-content-between">
-            <h2 class="mb-0">Logs</h2>
-            @{
-                if (ViewData.Model.ProjectStatus)
-                {
-                    <div class="align-self-end">
-                        <form>
-                            <button
-                                asp-area=""
-                                asp-action="AddLog"
-                                asp-route-id="@ViewData.Model.Id"
-                                class="btn btn-primary">
-                                Add log
-                            </button>
-                        </form>
-                    </div>
-                }
+            else
+            {
+                <p>No logs yet</p>
             }
-        </div>
-        <div class="w-100 mt-3">
-            @{
-                if (ViewData.Model.Logs.Count > 0)
-                {
-                    <table class="table table-striped table-hover">
-                        <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Who</th>
-                            <th scope="col">Amount</th>
-                            <th scope="col">Purpose</th>
-                            <th scope="col">Date</th>
-                            <th scope="col">Operation</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        @{
-                            if (ViewData.Model.Participants.Count > 0)
-                            {
-                                foreach (var log in ViewData.Model.Logs.Select((log, i) => new {i = i + 1, log}))
-                                {
-                                    <tr>
-                                        <th scope="row">@log.i</th>
-                                        <td>@log.log.Who.UserName</td>
-                                        <td>$@log.log.Amount</td>
-                                        <td>@log.log.Purpose</td>
-                                        <td>@log.log.LogDate.ToString("dd.MM.yyyy HH:mm")</td>
-                                        <td>
-                                            @{
-                                                if (ViewData.Model.ProjectStatus && isCurrentUserAuthor)
-                                                {
-                                                    <div class="d-flex align-items-center gap-2">
-                                                        <button class="btn btn-primary">Edit</button>
-                                                        <button class="btn btn-danger">Delete</button>
-                                                    </div>
-                                                }
-                                                else
-                                                {
-                                                    <span>-</span>
-                                                }
-                                            }
-                                        </td>
-                                    </tr>
-                                }
-                            }
-
-                        }
-                        </tbody>
-                    </table>
-                }
-                else
-                {
-                    <p>No logs yet</p>
-                }
-            }
-        </div>
+        }
     </div>
-
-	<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-         <div class="modal-dialog modal-dialog-centered">
-         	<div class="modal-content">
-            	<div class="modal-header">
-                	<h5 class="modal-title" id="exampleModalLabel">Enter participant's username</h5>
-                	<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              	</div>
-              	<div class="modal-body">
-                  	<form method="post">
-                  	<input type="text" class="form-control mb-3" placeholder="Username" name="username" required>
-                  	<input type="submit" class="btn btn-primary" asp-controller="Project" asp-action="NewParticipant"  asp-route-projectId="@ViewData.Model?.Id" value="Add participant">        
-    		      	<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                	</form>
-              	</div>
+</div>
+</div>
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Enter participant's username</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-         </div>
+            <div class="modal-body">
+                <form method="post">
+                    <input type="text" class="form-control mb-3" placeholder="Username" name="username" required>
+                    <input type="submit" class="btn btn-primary" asp-controller="Project" asp-action="NewParticipant" asp-route-projectId="@ViewData.Model?.Id" value="Add participant">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </form>
+            </div>
+        </div>
     </div>
 </div>

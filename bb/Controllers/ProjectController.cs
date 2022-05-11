@@ -85,7 +85,18 @@ public class ProjectController : Controller
         return Redirect($"/Log/AddLog?projectId={id}");
     }
     
-	[HttpPost]
+    public IActionResult EditLog(string projectId, string logId)
+    {
+        return Redirect($"/Log/EditLog?projectId={projectId}&logId={logId}");
+    }
+    
+    public async Task<IActionResult> RemoveLog(string projectId, string logId)
+    {
+        await _projectService.RemoveLog(projectId, logId);
+        return Redirect($"/Project/Project?projectId={projectId}");
+    }
+
+    [HttpPost]
     public async Task<IActionResult> NewParticipant(string projectId, string username)
     {
         var user = await _userService.GetUserByUsername(username);
@@ -98,6 +109,7 @@ public class ProjectController : Controller
         await _projectService.UpdateProject(projectId, project);
         return Redirect($"Project/Project?projectId={projectId}");
     }
+    
     [HttpGet]
     public async Task<IActionResult> RemoveParticipant(string projectId, Guid userId)
     {
