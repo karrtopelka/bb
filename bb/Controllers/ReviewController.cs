@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using bb.Models;
 using bb.Services;
 using Microsoft.AspNetCore.Identity;
@@ -9,17 +8,12 @@ namespace bb.Controllers;
 public class ReviewController : Controller
 {
     private readonly ProjectService _projectService;
-    private readonly UserManager<ApplicationUser> _userManager;
     private readonly UserService _userService;
-    private readonly LogService _logService;
 
-    public ReviewController(ProjectService projectService, UserManager<ApplicationUser> userManager,
-        UserService userService, LogService logService)
+    public ReviewController(ProjectService projectService, UserService userService)
     {
         _projectService = projectService;
-        _userManager = userManager;
         _userService = userService;
-        _logService = logService;
     }
 
     public async Task<IActionResult> Index([FromQuery(Name = "projectId")] string projectId)
