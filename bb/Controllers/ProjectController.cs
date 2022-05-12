@@ -140,4 +140,6 @@ public class ProjectController : Controller
         await _projectService.UpdateProject(projectId, project);
         return Redirect($"Project/Project?projectId={projectId}");
     }
+
+    public IActionResult ViewReview(string id) => Redirect($"/Review?projectId={id}");
 }

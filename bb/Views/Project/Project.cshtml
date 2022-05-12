@@ -40,10 +40,10 @@
         {
             <div class="d-flex align-items-center">
                 <p class="text-muted mb-0">Project is closed</p>
-                @{
-                    if (isCurrentUserAuthor)
-                    {
-                        <form>
+                <form>
+                    @{
+                        if (isCurrentUserAuthor)
+                        {
                             <button asp-area=""
                                     asp-controller="Project"
                                     asp-action="ReopenProject"
@@ -52,9 +52,17 @@
                                     style="margin-left: 1.5rem">
                                 Reopen project
                             </button>
-                        </form>
+                        }
+                        <button asp-area=""
+                                asp-controller="Project"
+                                asp-action="ViewReview"
+                                asp-route-id="@ViewData.Model.Id"
+                                class="btn btn-primary"
+                                style="margin-left: 1.5rem">
+                            Review Project
+                        </button>
                     }
-                }
+                </form>
             </div>
         }
     }

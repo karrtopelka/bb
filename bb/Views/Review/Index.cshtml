@@ -1,0 +1,67 @@
+@model ProjectExtend
+
+@{
+    var returnSums = ViewData["Owes"] as Dictionary<string, Dictionary<string, double>>;
+    var expansesPerUser = ViewData["expansesPerUser"] as Dictionary<string, double>;
+}
+
+<div class="w-50 mx-auto">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h1 class="mb-0">@ViewData.Model.ProjectName review</h1>
+            <a
+                class="btn btn-light mt-1"
+                asp-area=""
+                asp-controller="Review"
+                asp-route-id="@ViewData.Model.Id"
+                asp-action="BackToTheProject">
+                Back to the project
+            </a>
+        </div>
+        <h3 class="mb-0">Total spent: $@ViewData["projectSumAmount"]</h3>
+    </div>
+    <div class="w-100 border border-2 rounded rounded-2 mt-5 p-4">
+        <h2 class="mb-3">Expanses per user</h2>
+        @{
+            foreach (var epu in expansesPerUser)
+            {
+                <div class="w-100 d-flex mt-2 justify-content-between">
+                    <p class="h5 mb-0">@epu.Key</p>
+                    <div class="mx-3" style="border-bottom: 1px dotted #e3e3e3; flex: 1"></div>
+                    <p class="h5 mb-0">$@Math.Round(epu.Value, 2)</p>
+                </div>
+            }
+        }
+    </div>
+    <div class="w-100 border border-2 rounded rounded-2 mt-5 p-4">
+        <h2 class="mb-3">Owes</h2>
+        @{
+            foreach (var rs in returnSums)
+            {
+                <div class="w-100 d-flex flex-column gap-4 mt-4">
+                    @{
+                        foreach (var srs in rs.Value)
+                        {
+                            <div class="w-100 border border-2 p-4 rounded rounded-2 d-flex align-items-center justify-content-between">
+                                <div>
+                                    <p class="h3">@rs.Key</p>
+                                    <p class="text-muted">Owes</p>
+                                    <p class="h3">@srs.Key</p>
+                                </div>
+                                <p class="h2">$@Math.Round(srs.Value, 2)</p>
+                            </div>
+                        }
+                    }
+                </div>
+            }
+        }
+    </div>
+    <a
+        class="btn btn-primary mt-4"
+        asp-area=""
+        asp-controller="Review"
+        asp-action="BackToTheProject"
+        asp-route-id="@ViewData.Model.Id">
+        Back to the project
+    </a>
+</div>
