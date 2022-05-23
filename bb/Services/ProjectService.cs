@@ -4,7 +4,21 @@ using MongoDB.Driver;
 
 namespace bb.Services;
 
-public class ProjectService
+public interface IProjectService
+{
+    Task<Project> GetRawProject(string projectId);
+    Task<List<Project>> GetAllUserProjects(Guid userId);
+    Task<Project> GetUserProjectByName(Guid userId, string projectName);
+    Task<ProjectExtend> GetProject(string? id);
+    Task<Project> CreateProject(Project newProject);
+    Task<Project> CloseProject(string id);
+    Task<Project> ReopenProject(string id);
+    Task<List<ApplicationUser>> GetProjectParticipants(string id);
+    Task RemoveLog(string id, string logId);
+    Task UpdateProject(string id, Project updatedProject);
+}
+
+public class ProjectService : IProjectService
 {
     private readonly IMongoCollection<Project> _projectCollection;
     private readonly UserService _userService;
@@ -25,10 +39,10 @@ public class ProjectService
     public async Task<List<Project>> GetAllUserProjects(Guid userId) =>
         await _projectCollection.Find(x => x.Author == userId || x.Participants.Contains(userId)).ToListAsync();
 
-    public async Task<Project?> GetUserProjectByName(Guid userId, string projectName) => await _projectCollection
+    public async Task<Project> GetUserProjectByName(Guid userId, string projectName) => await _projectCollection
         .Find(x => x.Author == userId && x.ProjectName == projectName).FirstOrDefaultAsync();
 
-    public async Task<ProjectExtend?> GetProject(string? id)
+    public async Task<ProjectExtend> GetProject(string? id)
     {
         var project = await _projectCollection.Find(x => x.Id == id)
             .FirstOrDefaultAsync();
@@ -86,7 +100,7 @@ public class ProjectService
         return updatedProject;
     }
 
-    public async Task<List<ApplicationUser>?> GetProjectParticipants(string id)
+    public async Task<List<ApplicationUser>> GetProjectParticipants(string id)
     {
         var project = await _projectCollection.Find(x => x.Id == id)
             .FirstOrDefaultAsync();
