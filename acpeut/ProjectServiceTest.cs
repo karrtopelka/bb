@@ -1,18 +1,15 @@
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using bb.Models;
 using bb.Services;
-using MongoDB.Bson;
 using Moq;
 using Xunit;
 
 namespace acpeut;
 
-public class ServicesTest
+public class ProjectServiceTest
 {
     private const string TestProjectId = "627d47ae420a155f23c9f02b";
-    private const string TestLogId = "627d47be420a155f23c9f02b";
     private const string TestProjectName = "Rakivec";
     private readonly Guid _testProjectAuthor = new("e9da77e6-5cac-4af0-ae8a-30d322d13625");
     private readonly ApplicationUser _appUser = new() {UserName = "karrtopelka", Email = "karrtopelka@gmail.com"};
@@ -57,7 +54,7 @@ public class ServicesTest
     };
 
     [Fact]
-    public async void PS_GetRawProject_Test()
+    public async void GetRawProject_Test()
     {
         var mock = new Mock<IProjectService>();
         mock.Setup(x => x.GetRawProject(TestProjectId)).ReturnsAsync(_testProject);
@@ -72,7 +69,7 @@ public class ServicesTest
     }
     
     [Fact]
-    public async void PS_GetAllUserProjects_Test()
+    public async void GetAllUserProjects_Test()
     {
         var mock = new Mock<IProjectService>();
         mock.Setup(x => x.GetAllUserProjects(_testProjectAuthor)).ReturnsAsync(new List<Project>{_testProject});
@@ -83,7 +80,7 @@ public class ServicesTest
     }
     
     [Fact]
-    public async void PS_GetUserProjectByName_Test()
+    public async void GetUserProjectByName_Test()
     {
         var mock = new Mock<IProjectService>();
         mock.Setup(x => x.GetUserProjectByName(_testProjectAuthor, TestProjectName)).ReturnsAsync(_testProject);
@@ -94,7 +91,7 @@ public class ServicesTest
     }
     
     [Fact]
-    public async void PS_GetProject_Test()
+    public async void GetProject_Test()
     {
         var mock = new Mock<IProjectService>();
         mock.Setup(x => x.GetProject(TestProjectId)).ReturnsAsync(_testProjectExtended);
@@ -105,7 +102,7 @@ public class ServicesTest
     }
     
     [Fact]
-    public async void PS_CreateProject_Test()
+    public async void CreateProject_Test()
     {
         var currentTime = DateTime.Now;
         var newProject = new Project
@@ -128,7 +125,7 @@ public class ServicesTest
     }
     
     [Fact]
-    public async void PS_CloseProject_Test()
+    public async void CloseProject_Test()
     {
         var mock = new Mock<IProjectService>();
         mock.Setup(x => x.CloseProject(TestProjectId)).ReturnsAsync(_testProjectClosed);
@@ -140,7 +137,7 @@ public class ServicesTest
     }
     
     [Fact]
-    public async void PS_ReopenProject_Test()
+    public async void ReopenProject_Test()
     {
         var mock = new Mock<IProjectService>();
         mock.Setup(x => x.ReopenProject(TestProjectId)).ReturnsAsync(_testProject);
@@ -152,7 +149,7 @@ public class ServicesTest
     }
     
     [Fact]
-    public async void PS_GetProjectParticipants_Test()
+    public async void GetProjectParticipants_Test()
     {
         var mock = new Mock<IProjectService>();
         mock.Setup(x => x.GetProjectParticipants(TestProjectId)).ReturnsAsync(new List<ApplicationUser>{_appUser});
