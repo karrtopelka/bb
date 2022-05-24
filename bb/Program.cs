@@ -14,7 +14,6 @@ builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()
 builder.Services.AddControllersWithViews();
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
-builder.Services.AddScoped<DocumentService>();
 builder.Services.AddScoped<ProjectService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<LogService>();

@@ -5,7 +5,16 @@ using MongoDB.Driver;
 
 namespace bb.Services;
 
-public class LogService
+public interface ILogService
+{
+    Task<Log> GetLog(string logId);
+    Task AddLog(Log newLog, string projectId);
+    Task EditLog(Log newLog);
+    Task<List<LogExtend>?> GetProjectLogs(List<string> logs);
+    Task RemoveLog(string id);
+}
+
+public class LogService : ILogService
 {
     private readonly IMongoCollection<Log> _logCollection;
     private readonly IMongoCollection<Project> _projectCollection;

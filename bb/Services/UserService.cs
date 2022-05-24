@@ -1,11 +1,20 @@
-using AspNetCore.Identity.MongoDbCore.Extensions;
 using bb.Models;
-using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace bb.Services;
 
-public class UserService
+public interface IUserService
+{
+    Task<List<ApplicationUser>> GetAllUsers();
+    Task<List<ApplicationUser>> GetAllUsersByEmails(List<string> emails);
+    Task<ApplicationUser?> GetUser(Guid userId);
+    Task<List<ApplicationUser>> GetUsersById(List<Guid>? users);
+    Task UpdateUser(string email, ApplicationUser updatedUser);
+    Task<List<ApplicationUser>> GetAllParticipants(List<Guid> participants);
+    Task<ApplicationUser?> GetUserByUsername(string username);
+}
+
+public class UserService : IUserService
 {
     private readonly IMongoCollection<ApplicationUser> _userCollection;
 

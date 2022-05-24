@@ -4,5 +4,7 @@
     &lt;TestId&gt;xUnit::65EDE40B-B5B7-4E15-8233-97C065B802F1::net6.0::acpeut.ModelsTest&lt;/TestId&gt;
     &lt;TestId&gt;xUnit::65EDE40B-B5B7-4E15-8233-97C065B802F1::net6.0::acpeut.ServicesTest&lt;/TestId&gt;
     &lt;TestId&gt;xUnit::65EDE40B-B5B7-4E15-8233-97C065B802F1::net6.0::acpeut.ProjectServiceTest&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::65EDE40B-B5B7-4E15-8233-97C065B802F1::net6.0::acpeut.UserServiceTest&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::65EDE40B-B5B7-4E15-8233-97C065B802F1::net6.0::acpeut.LogServiceTest&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using bb.Models;
 using bb.Services;
 using Moq;
@@ -10,6 +11,7 @@ namespace acpeut;
 public class ProjectServiceTest
 {
     private const string TestProjectId = "627d47ae420a155f23c9f02b";
+    private const string TestLogId = "627d47be420a155f23c9f02b";
     private const string TestProjectName = "Rakivec";
     private readonly Guid _testProjectAuthor = new("e9da77e6-5cac-4af0-ae8a-30d322d13625");
     private readonly ApplicationUser _appUser = new() {UserName = "karrtopelka", Email = "karrtopelka@gmail.com"};
@@ -157,5 +159,25 @@ public class ProjectServiceTest
         var mockProject = await projectService.GetProjectParticipants(TestProjectId);
 
         Assert.Single(mockProject);
+    }
+    
+    [Fact]
+    public async void RemoveLog_Test()
+    {
+        var mock = new Mock<IProjectService>();
+        mock.Setup(x => x.RemoveLog(TestProjectId, TestLogId));
+        var projectService = mock.Object;
+
+        await Assert.IsAssignableFrom<Task>(projectService.RemoveLog(TestProjectId, TestLogId));
+    }
+    
+    [Fact]
+    public async void UpdateProject_Test()
+    {
+        var mock = new Mock<IProjectService>();
+        mock.Setup(x => x.UpdateProject(TestProjectId, _testProject));
+        var projectService = mock.Object;
+
+        await Assert.IsAssignableFrom<Task>(projectService.UpdateProject(TestProjectId, _testProject));
     }
 }
