@@ -2,6 +2,7 @@
 
 @{
     var isCurrentUserAuthor = ViewData.Model.Author.UserName == User.Identity?.Name;
+    var currentUserId = ViewData["currentUser"] as ApplicationUser;
 }
 
 <script type="text/javascript">
@@ -33,7 +34,18 @@
             }
             else
             {
-                <p class="text-success">Project is active</p>
+                <div class="d-flex align-items-center">
+                    <p class="text-success mb-0">Project is active</p>
+                    <button
+                        class="btn btn-danger"
+                        data-bs-toggle="modal"
+                        data-bs-target="#exampleModal2"
+                        onclick="setSelectedRemoveUser('@currentUserId.Id')"
+                        style="margin-left: 1.5rem">
+                        Leave project
+                    </button>
+
+                </div>
             }
         }
         else
@@ -71,7 +83,7 @@
     <div class="w-100 d-flex align-items-center justify-content-between">
         <h2 class="mb-0">Participants</h2>
         @{
-            if (ViewData.Model.ProjectStatus)
+            if (ViewData.Model.ProjectStatus && isCurrentUserAuthor)
             {
                 <div class="align-self-end">
                     <button
@@ -282,6 +294,7 @@
                             asp-action="RemoveParticipant"
                             asp-route-projectId="@ViewData.Model?.Id"
                             asp-route-deleteLogs="@true"
+                            asp-route-adminLeave="@isCurrentUserAuthor"
                             value="Remove">
                         <input
                             type="submit"
@@ -289,7 +302,7 @@
                             style="flex: 1;"
                             asp-action="RemoveParticipant"
                             asp-route-projectId="@ViewData.Model?.Id"
-
+                            asp-route-adminLeave="@isCurrentUserAuthor"
                             asp-route-deleteLogs="@false"
                             value="Keep">
                     </div>

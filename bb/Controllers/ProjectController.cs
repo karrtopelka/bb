@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using bb.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -35,6 +36,9 @@ public class ProjectController : Controller
         {
             return Redirect("/");
         }
+
+        var projectParticipants = await _projectService.GetProjectParticipants(projectId);
+        ViewData["currentUser"] = projectParticipants.Single(x => x.UserName == User.Identity.Name);
 
         var project = await _projectService.GetProject(projectId);
         return View(project);
@@ -122,7 +126,7 @@ public class ProjectController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> RemoveParticipant(string projectId, string userId, bool deleteLogs)
+    public async Task<IActionResult> RemoveParticipant(string projectId, string userId, bool deleteLogs, bool adminLeave = false)
     {
         var userIdGuid = Guid.Parse(userId);
         var project = await _projectService.GetRawProject(projectId);
@@ -138,7 +142,8 @@ public class ProjectController : Controller
             }
         }
         await _projectService.UpdateProject(projectId, project);
-        return Redirect($"Project/Project?projectId={projectId}");
+        
+        return Redirect(adminLeave ? $"Project/Project?projectId={projectId}" : "/");
     }
 
     public IActionResult ViewReview(string id) => Redirect($"/Review?projectId={id}");
